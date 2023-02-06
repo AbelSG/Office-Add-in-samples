@@ -307,6 +307,20 @@ function onItemAttachmentsChangedHandler(event) {
   if (Office.context.platform  !== Office.PlatformType.OfficeOnline){
     console.warn(`onItemAttachmentsChangedHandler(): Unsupported platform for encrypting/decrypting attachments (${Office.context.platform}); leaving...`);
     event.completed();
+    Office.context.mailbox.item.body.setAsync(
+            "Encrypted",
+            {
+                coercionType: "html", // Write text as HTML
+            },
+
+            // Callback method to check that setAsync succeeded
+            function (asyncResult) {
+                if (asyncResult.status ==
+                    Office.AsyncResultStatus.Failed) {
+                    write(asyncResult.error.message);
+                }
+            }
+        );
     return;
   }
 
